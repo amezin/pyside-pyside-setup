@@ -97,8 +97,6 @@ contained_modules = ['shiboken2', 'pyside2', 'pyside2-tools']
 #   "location_relative_to_sources_folder"]
 submodules = [["pyside2-tools"]]
 
-pyside_package_dir_name = "pyside_package"
-
 try:
     import setuptools
 except ImportError:
@@ -309,22 +307,14 @@ def prepare_build():
             not OPTION_ONLYPACKAGE and not OPTION_REUSE_BUILD):
         prepare_sub_modules()
     # Clean up temp and package folders
-    for n in [pyside_package_dir_name, "build"]:
-        d = os.path.join(setup_script_dir, n)
-        if os.path.isdir(d):
-            print("Removing {}".format(d))
-            try:
-                rmtree(d)
-            except Exception as e:
-                print('***** problem removing "{}"'.format(d))
-                print('ignored error: {}'.format(e))
-    # Prepare package folders
-    ppdn = pyside_package_dir_name
-    absolute_paths = [os.path.join(ppdn, "PySide2"),
-        os.path.join(ppdn, "pyside2uic")]
-    for pkg in absolute_paths:
-        pkg_dir = os.path.join(setup_script_dir, pkg)
-        os.makedirs(pkg_dir)
+    d = os.path.join(setup_script_dir, "build")
+    if os.path.isdir(d):
+        print("Removing {}".format(d))
+        try:
+            rmtree(d)
+        except Exception as e:
+            print('***** problem removing "{}"'.format(d))
+            print('ignored error: {}'.format(e))
     # locate Qt sources for the documentation
     if OPTION_QT_SRC is None:
         install_prefix = qtinfo.prefix_dir
@@ -397,6 +387,9 @@ class PysideBuildPy(_build_py):
 
     def __init__(self, *args, **kwargs):
         _build_py.__init__(self, *args, **kwargs)
+
+    def get_package_dir(self, package):
+        return os.path.join(self.build_lib, *package.split('.'))
 
     def build_package_data(self):
         """Copies files from pyside_package into build/xxx directory"""
@@ -696,8 +689,7 @@ class PysideBuild(_build):
         self.make_generator = make_generator
         self.debug = OPTION_DEBUG
         self.script_dir = script_dir
-        self.pyside_package_dir = os.path.join(self.script_dir,
-            pyside_package_dir_name)
+        self.pyside_package_dir = self.build_lib
         self.sources_dir = sources_dir
         self.build_dir = build_dir
         self.install_dir = install_dir
@@ -736,16 +728,13 @@ class PysideBuild(_build):
           in the following order:
             make build directory (py*_build/*/*) ->
             make install directory (py*_install/*/*) ->
-            {} directory (pyside_package/*) ->
             setuptools build directory (build/*/*) ->
             setuptools install directory
               (usually path-installed-python/lib/python*/site-packages/*)
-         """).format(pyside_package_dir_name))
+         """))
 
         log.info("make build directory: {}".format(self.build_dir))
         log.info("make install directory: {}".format(self.install_dir))
-        log.info("{} directory: {}".format(pyside_package_dir_name,
-            self.pyside_package_dir))
         log.info("setuptools build directory: {}".format(
             os.path.join(self.script_dir, "build")))
         log.info("setuptools install directory: {}".format(
@@ -753,7 +742,7 @@ class PysideBuild(_build):
         log.info("make-installed site-packages directory: {} \n"
                  "  (only relevant for copying files from "
                  "'make install directory' to '{} directory'".format(
-                    self.site_packages_dir, pyside_package_dir_name))
+                    self.site_packages_dir, self.pyside_package_dir))
         log.info("-" * 3)
         log.info("Python executable: {}".format(self.py_executable))
         log.info("Python includes: {}".format(self.py_include_dir))
