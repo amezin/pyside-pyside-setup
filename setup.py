@@ -286,7 +286,10 @@ setup(
     packages = ['PySide2', 'pyside2uic',
                 'pyside2uic.Compiler',
                 'pyside2uic.port_v{}'.format(sys.version_info[0]) ],
-    package_dir = {'': pyside_package_dir_name},
+    package_dir = {
+        'PySide2': 'sources/pyside2/PySide2',
+        'pyside2uic': 'sources/pyside2-tools/pyside2uic',
+    },
     include_package_data = True,
     zip_safe = False,
     entry_points = {

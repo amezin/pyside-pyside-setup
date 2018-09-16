@@ -398,6 +398,9 @@ class PysideBuildPy(_build_py):
     def __init__(self, *args, **kwargs):
         _build_py.__init__(self, *args, **kwargs)
 
+    def get_package_dir(self, package):
+        return os.path.join(pyside_package_dir_name, *package.split('.'))
+
     def build_package_data(self):
         """Copies files from pyside_package into build/xxx directory"""
 
