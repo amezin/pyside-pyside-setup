@@ -4,9 +4,6 @@ project(pyside2)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/global.h.in"
                "${CMAKE_CURRENT_BINARY_DIR}/pyside2_global.h" @ONLY)
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in"
-               "${CMAKE_CURRENT_BINARY_DIR}/__init__.py" @ONLY)
-
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_config.py.in"
               "${CMAKE_CURRENT_BINARY_DIR}/_config.py" @ONLY)
 
@@ -36,6 +33,8 @@ if (WIN32 OR (UNIX AND NOT APPLE) OR (APPLE AND NOT QtCore_is_framework))
                    "${CMAKE_CURRENT_BINARY_DIR}/qt.conf" @ONLY)
 endif()
 
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/__init__.py"
+               "${CMAKE_CURRENT_BINARY_DIR}/__init__.py" COPYONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/support/__init__.py"
                "${CMAKE_CURRENT_BINARY_DIR}/support/__init__.py" COPYONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/support/signature/__init__.py"

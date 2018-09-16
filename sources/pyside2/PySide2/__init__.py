@@ -1,16 +1,17 @@
-__all__ = list("Qt" + body for body in
-    "@all_module_shortnames@"
-    .split(";"))
-__version__ = "@FINAL_PACKAGE_VERSION@"
-__version_info__ = (@BINDING_API_MAJOR_VERSION@, @BINDING_API_MINOR_VERSION@, @BINDING_API_MICRO_VERSION@, "@BINDING_API_PRE_RELEASE_VERSION_TYPE@", "@BINDING_API_PRE_RELEASE_VERSION@")
+from . import _config
 
-@PYSIDE_BUILD_DATE@
-@PYSIDE_BUILD_COMMIT_DATE@
-@PYSIDE_BUILD_COMMIT_HASH@
-@PYSIDE_BUILD_COMMIT_HASH_DESCRIBED@
+__all__ = list("Qt" + body for body in _config.built_modules)
+__version__ = _config.version
+__version_info__ = _config.version_info
 
-# Timestamp used for snapshot build, which is part of snapshot package version.
-@PYSIDE_SETUP_PY_PACKAGE_TIMESTAMP_ASSIGNMENT@
+for attr in ['__build_date__',
+             '__build_commit_date__',
+             '__build_commit_hash__',
+             '__build_commit_hash_described__',
+             '__setup_py_package_timestamp__']:
+    if hasattr(_config, attr):
+        vars()[attr] = getattr(_config, attr)
+
 
 def _setupQtDirectories():
     import sys
