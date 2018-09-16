@@ -231,7 +231,6 @@ if os.path.dirname(this_file):
     os.chdir(os.path.dirname(this_file))
 
 from build_scripts.main import get_package_version, get_setuptools_extension_modules
-from build_scripts.main import pyside_package_dir_name
 from build_scripts.main import cmd_class_dict
 from build_scripts.main import README, CHANGES
 from setuptools import setup, Extension
@@ -286,8 +285,10 @@ setup(
     packages = ['PySide2', 'pyside2uic',
                 'pyside2uic.Compiler',
                 'pyside2uic.port_v{}'.format(sys.version_info[0]) ],
-    package_dir = {'': pyside_package_dir_name},
-    include_package_data = True,
+    package_dir = {
+        'PySide2': 'sources/pyside2/PySide2',
+        'pyside2uic': 'sources/pyside2-tools/pyside2uic',
+    },
     zip_safe = False,
     entry_points = {
         'console_scripts': [
