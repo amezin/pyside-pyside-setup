@@ -309,8 +309,8 @@ def get_qt_version():
     return qt_version
 
 def prepare_build():
-    if (os.path.isdir(".git") and not OPTION_IGNOREGIT and
-            not OPTION_ONLYPACKAGE and not OPTION_REUSE_BUILD):
+    if ((os.path.isdir(".git") and not OPTION_IGNOREGIT and
+            not OPTION_ONLYPACKAGE) or OPTION_FORCE_REBUILD):
         prepare_sub_modules()
     # Clean up temp and package folders
     for n in [pyside_package_dir_name, "build"]:
@@ -924,7 +924,7 @@ class PysideBuild(_build):
 
         module_build_exists = os.path.exists(module_build_dir)
         if module_build_exists:
-            if not OPTION_REUSE_BUILD:
+            if OPTION_FORCE_REBUILD:
                 log.info("Deleting module build folder {}...".format(
                     module_build_dir))
                 try:
